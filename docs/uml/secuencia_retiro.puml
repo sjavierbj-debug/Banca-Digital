@@ -1,0 +1,35 @@
+@startuml secuencia_retiro
+skinparam sequenceMessageAlign center
+actor Cliente
+participant "Frontend\n(React)" as FE
+participant CuentaController as CC
+participant CuentaService as CS
+participant CuentaRepository as CR
+participant DispensadorEfectivo as DE
+participant TransaccionRepository as TR
+
+Cliente -> FE : ingresa monto y PIN
+FE -> CC : POST /api/cuentas/{id}/retiros
+CC -> CS : retirar(id, monto, pin)
+CS -> CR : buscarPorId(id)
+CR --> CS : Cuenta
+CS -> CS : validar PIN (4 dígitos y correcto)
+CS -> CS : validar monto mínimo ($10.000)
+CS -> DE : calcular(monto)
+DE --> CS : billetes
+CS -> TR : totalRetiradoDesde(id, hoy)
+TR --> CS : retirado hoy
+CS -> CS : validar tope diario y saldo
+
+alt alguna regla falla
+  CS --> CC : ReglaNegocioException(motivo)
+  CC --> FE : 4xx { "mensaje": motivo }
+  FE --> Cliente : muestra el motivo
+else todo válido
+  CS -> CR : guardar(cuenta con saldo nuevo)
+  CS -> TR : guardar(Transaccion RETIRO)
+  CS --> CC : RetiroRes(billetes, saldo)
+  CC --> FE : 200 OK
+  FE --> Cliente : muestra billetes a entregar
+end
+@enduml

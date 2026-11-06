@@ -1,0 +1,73 @@
+@startuml clases
+skinparam classAttributeIconSize 0
+package "domain.model" {
+  class Cuenta {
+    - id : Long
+    - nombre : String
+    - documento : String
+    - correo : String
+    - telefono : String
+    - direccion : String
+    - claveHash : String
+    - pinHash : String
+    - saldo : long
+  }
+  class Transaccion {
+    - id : Long
+    - cuentaId : Long
+    - tipo : String
+    - monto : long
+    - saldoPosterior : long
+    - fecha : LocalDateTime
+  }
+}
+package "domain.repository" {
+  interface CuentaRepository {
+    + guardar(c : Cuenta) : Cuenta
+    + buscarPorId(id : Long) : Optional<Cuenta>
+    + buscarPorDocumento(d : String) : Optional<Cuenta>
+  }
+  interface TransaccionRepository {
+    + guardar(t : Transaccion) : Transaccion
+    + listarPorCuenta(id : Long) : List<Transaccion>
+    + totalRetiradoDesde(id : Long, desde : LocalDateTime) : long
+  }
+}
+package "domain.service / exception" {
+  class DispensadorEfectivo {
+    + {static} calcular(monto : long) : Map<Long,Integer>
+  }
+  class ReglaNegocioException {
+    - status : int
+  }
+}
+package "application.usecase" {
+  class CuentaService {
+    + registrar(r : RegistroReq) : CuentaDto
+    + login(r : LoginReq) : CuentaDto
+    + obtener(id : Long) : CuentaDto
+    + actualizarDatos(id : Long, r : DatosReq) : CuentaDto
+    + cambiarCredenciales(id : Long, r : CredencialesReq) : CuentaDto
+    + depositar(id : Long, monto : long) : CuentaDto
+    + retirar(id : Long, monto : long, pin : String) : RetiroRes
+    + movimientos(id : Long) : List<Transaccion>
+  }
+}
+package "infrastructure" {
+  class CuentaController
+  class ManejadorErrores
+  class CuentaRepositoryImpl
+  class TransaccionRepositoryImpl
+}
+
+CuentaController --> CuentaService
+ManejadorErrores ..> ReglaNegocioException
+CuentaService --> CuentaRepository
+CuentaService --> TransaccionRepository
+CuentaService ..> DispensadorEfectivo
+CuentaService ..> ReglaNegocioException
+CuentaRepositoryImpl ..|> CuentaRepository
+TransaccionRepositoryImpl ..|> TransaccionRepository
+DispensadorEfectivo ..> ReglaNegocioException
+Cuenta "1" -- "0..*" Transaccion : tiene
+@enduml

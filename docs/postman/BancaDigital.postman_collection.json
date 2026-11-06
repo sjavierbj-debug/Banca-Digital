@@ -1,0 +1,357 @@
+{
+  "info": {
+    "name": "Banca Digital",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:8080/api"
+    },
+    {
+      "key": "id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Crear cuenta",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Ana Pérez\",\n  \"documento\": \"1001\",\n  \"correo\": \"ana@mail.com\",\n  \"telefono\": \"3001234567\",\n  \"direccion\": \"Calle 1 # 2-3\",\n  \"clave\": \"secreta1\",\n  \"pin\": \"1234\"\n}"
+        }
+      }
+    },
+    {
+      "name": "2. Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/auth/login",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"documento\": \"1001\",\n  \"clave\": \"secreta1\"\n}"
+        }
+      }
+    },
+    {
+      "name": "3. Consultar saldo",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. Depositar 2.000.000",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}/depositos",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}",
+            "depositos"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"monto\": 2000000\n}"
+        }
+      }
+    },
+    {
+      "name": "5. Retirar 280.000 (OK)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}/retiros",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}",
+            "retiros"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"monto\": 280000,\n  \"pin\": \"1234\"\n}"
+        }
+      }
+    },
+    {
+      "name": "6. Retirar con PIN incorrecto",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}/retiros",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}",
+            "retiros"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"monto\": 50000,\n  \"pin\": \"0000\"\n}"
+        }
+      }
+    },
+    {
+      "name": "7. Retirar PIN de 3 dígitos",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}/retiros",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}",
+            "retiros"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"monto\": 50000,\n  \"pin\": \"123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "8. Retirar menos del mínimo (5.000)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}/retiros",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}",
+            "retiros"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"monto\": 5000,\n  \"pin\": \"1234\"\n}"
+        }
+      }
+    },
+    {
+      "name": "9. Retirar monto no fraccionable (15.000)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}/retiros",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}",
+            "retiros"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"monto\": 15000,\n  \"pin\": \"1234\"\n}"
+        }
+      }
+    },
+    {
+      "name": "10. Retirar 700.000 (supera tope diario con el paso 5)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}/retiros",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}",
+            "retiros"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"monto\": 700000,\n  \"pin\": \"1234\"\n}"
+        }
+      }
+    },
+    {
+      "name": "11. Actualizar datos",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}/datos",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}",
+            "datos"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"correo\": \"nuevo@mail.com\",\n  \"telefono\": \"3110000000\",\n  \"direccion\": \"Carrera 5 # 6-7\"\n}"
+        }
+      }
+    },
+    {
+      "name": "12. Cambiar clave y PIN",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}/credenciales",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}",
+            "credenciales"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"claveActual\": \"secreta1\",\n  \"claveNueva\": \"nueva1234\",\n  \"pinNuevo\": \"4321\"\n}"
+        }
+      }
+    },
+    {
+      "name": "13. Historial",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cuentas/{{id}}/transacciones",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cuentas",
+            "{{id}}",
+            "transacciones"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+@startuml componentes
+skinparam componentStyle rectangle
+actor Cliente
+node "Navegador" {
+  component "Frontend React\n(Vite, puerto 5173)" as FE
+}
+node "Servidor (Spring Boot, puerto 8080)" {
+  component "Controladores REST\n(CuentaController)" as CTRL
+  component "Casos de uso\n(CuentaService)" as APP
+  component "Dominio\n(Cuenta, Transaccion,\nDispensadorEfectivo)" as DOM
+  component "Persistencia\n(Repository Impl + JPA)" as INF
+}
+database "PostgreSQL\nuniprest_db" as DB
+
+Cliente --> FE
+FE --> CTRL : HTTP / JSON
+CTRL --> APP
+APP --> DOM
+INF ..> DOM : implementa puertos
+APP ..> INF : vía interfaces del dominio
+INF --> DB : JDBC
+@enduml
